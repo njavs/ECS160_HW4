@@ -26,7 +26,7 @@ int main() {
     //struct tweet_stat_container* stats;
     struct tweeter_stat * stats;
 
-    //                                   file, delimiter, first_line_is_header?
+    // file, delimiter, first_line_is_header?
     CsvParser *csvparser = CsvParser_new("cl-tweets-short.csv", ",", 1);
     CsvRow *header;
     CsvRow *row;
@@ -38,7 +38,7 @@ int main() {
     }
 
     all_tweeters = malloc(sizeof(struct tweet_container));
-    stats = malloc(sizeof(struct tweeter_stat_container));
+    stats = malloc(sizeof(struct tweeter_stat_container)); // To delete?
 
     char **headerFields = CsvParser_getFields(header);
     for (i = 0 ; i < CsvParser_getNumFields(header) ; i++) {
@@ -89,32 +89,53 @@ int main() {
     /* Count number of tweets per user. Store in tweet_stat_container */
     int count = 0;
     int j;
-    int unique_members=0;
+    int unique_members = 0;
     stats = malloc(sizeof(struct tweeter_stat) * TWEET_MAX);
+    
     for (int i = 0; i < tweet_count - 1; i++) {
       count = 0;
+
       strncpy(stats[unique_members].name,all_tweeters->tweet_name_array[i],16);
       printf("name to look for:%s\n",stats[i].name);
       printf("current count is:%d\n",stats[i].count);
-      j=1;
-      while (!(strncmp(all_tweeters->tweet_name_array[i],all_tweeters->tweet_name_array[i + j],16))){
+      j = 1;
+
+      while (!(strncmp(all_tweeters->tweet_name_array[i], all_tweeters->tweet_name_array[i + j], 16))){
         printf("name to look for:%s\n",all_tweeters->tweet_name_array[i]);
         printf("next name: %s\n",all_tweeters->tweet_name_array[i+j]);
         j++;
       }
+
       stats[unique_members].count = j;
       //count++;
-      i=i+j;
-      j=0;
+      i = i+j;
+      j = 0;
       unique_members++;
       //i=i+j;
     }
 
     for (int i = 0; i < 100; i++) {
-    	printf("Name: %s    count: %d\n", stats[i].name, stats[i].count);
+    	printf("Name: %s count: %d\n", stats[i].name, stats[i].count);
     }
 
+    /* Sort stats by count */
+    // stats[i], stats[j]
+    struct tweeter_stat temp_stat;
+    for (int i = 0; i < unique_members - 1; i++) {
+        for (int j = i + 1; j < unique_members; j++) {
+            if (stats[i].count > stats[j].count) {
+                // reorder the stats array
+                temp_stat = stats[i];
+                stats[i] = stats[j];
+                stats[j] = temp_stat;
+            }
+        }
+    }
 
+    for (int i = 0 ; i < unique_members; i++) {
+        printf("Name: %s, Count: %d\n", stats[i].name, stats[i].count);
+    }
+    
     CsvParser_destroy(csvparser);
     free(all_tweeters);
     free(stats);
