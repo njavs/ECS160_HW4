@@ -23,9 +23,10 @@ int main() {
     while ((row = CsvParser_getRow(csvparser)) ) {
         printf("NEW LINE:\n");
         char **rowFields = CsvParser_getFields(row);
-        for (i = 0 ; i < CsvParser_getNumFields(row) ; i++) {
-            printf("FIELD: %s\n", rowFields[i]);
-        }
+        // for (i = 0 ; i < CsvParser_getNumFields(row) ; i++) {
+        //     printf("FIELD: %s\n", rowFields[i]);
+        // }
+        printf("FIELD: %s\n", rowFields[8]);
         CsvParser_destroy_row(row);
     }
     CsvParser_destroy(csvparser);
