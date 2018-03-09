@@ -118,12 +118,12 @@ int main() {
     	printf("Name: %s count: %d\n", stats[i].name, stats[i].count);
     }
 
-    /* Sort stats by count */
+    /* Sort stats in descending order by count */
     // stats[i], stats[j]
     struct tweeter_stat temp_stat;
     for (int i = 0; i < unique_members - 1; i++) {
         for (int j = i + 1; j < unique_members; j++) {
-            if (stats[i].count > stats[j].count) {
+            if (stats[i].count < stats[j].count) {
                 // reorder the stats array
                 temp_stat = stats[i];
                 stats[i] = stats[j];
@@ -132,7 +132,8 @@ int main() {
         }
     }
 
-    for (int i = 0 ; i < unique_members; i++) {
+    printf("Printing top 10... --------------------- \n");
+    for (int i = 0; i < 10; i++) {
         printf("Name: %s, Count: %d\n", stats[i].name, stats[i].count);
     }
     
