@@ -1,2 +1,4 @@
 # ECS160_HW4
-ECS 160 Homework 4
+
+Name #1: Andrew Shephard
+Name #2: Nausheen Sujela
