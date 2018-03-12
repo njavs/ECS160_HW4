@@ -296,6 +296,40 @@ int main(int argc, char **args) {
         exit(0);
     
     char *csv_file = args[1];
+    FILE *fp;
+    fp = fopen(csv_file, "r");
+
+    if(fp == NULL) {
+      perror("Error opening file");
+      return(-1);
+   }
+
+    /* Trying to not crash */
+    char header_string[2000];
+    if (fgets (header_string, 2000, fp) == NULL) {
+        exit(0);
+    }
+
+    char *token;
+    token = strtok (header_string,",");
+    
+    int found_name = 0;
+    int header_count = 0;
+
+    while (token != NULL)
+    {
+        // printf ("%s\n",token);
+        if (strncmp(token, "name", 4) == 0)
+            found_name = 1;
+        token = strtok (NULL, ",");
+        header_count++;
+    }
+
+    if (found_name == 0)
+        exit(0);
+
+    if (header_count != 16)
+        exit(0);
     
     // file, delimiter, first_line_is_header?
     //CsvParser *csvparser = CsvParser_new("cl-tweets-short.csv", ",", 1);
@@ -304,11 +338,12 @@ int main(int argc, char **args) {
     CsvRow *row;
 
     header = CsvParser_getHeader(csvparser);
+    
     if (header == NULL) {
         printf("%s\n", CsvParser_getErrorMessage(csvparser));
         exit(0);
         //return 1;
-    }
+     }
 
     all_tweeters = malloc(sizeof(struct tweet_container));
     stats = malloc(sizeof(struct tweeter_stat_container)); // To delete?
@@ -413,6 +448,6 @@ int main(int argc, char **args) {
     CsvParser_destroy(csvparser);
     free(all_tweeters);
     free(stats);
-
+    fclose(fp);
     return 0;
 }
