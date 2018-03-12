@@ -1,4 +1,4 @@
-make: csvparser.c maxTweeter.c
-	gcc csvparser.c maxTweeter.c -o maxTweeter.x
+make: maxTweeter.c
+	gcc maxTweeter.c -o maxTweeter.x
 clean:
 	rm *.x *~ *#

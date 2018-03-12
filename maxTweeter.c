@@ -140,8 +140,12 @@ CsvRow *_CsvParser_getRow(CsvParser *csvParser) {
     int numRowRealloc = 0;
     int acceptedFields = 64;
     int acceptedCharsInField = 64;
+
+    /* Print all struct information */
+    
     if (csvParser->filePath_ == NULL && (! csvParser->fromString_)) {
         _CsvParser_setErrorMessage(csvParser, "Supplied CSV file path is NULL");
+        //printf("filepath: %s\n", csvParser->filePath_);
         return NULL;
     }
     if (csvParser->csvString_ == NULL && csvParser->fromString_) {
@@ -273,22 +277,37 @@ char **CsvParser_getFields(CsvRow *csvRow) {
     return csvRow->fields_;
 }
 
-int main() {
+
+/* ---- MAIN ---- */
+int main(int argc, char **args) {
     int i =  0;
     int tweet_count = 0;
     struct tweet_container* all_tweeters;
     //struct tweet_stat_container* stats;
     struct tweeter_stat * stats;
 
+    if (argc !=2 )
+        exit(0);
+
+    if (args[0] == NULL)
+        exit(0);
+    
+    if (args[1] == NULL)
+        exit(0);
+    
+    char *csv_file = args[1];
+    
     // file, delimiter, first_line_is_header?
-    CsvParser *csvparser = CsvParser_new("cl-tweets-short.csv", ",", 1);
+    //CsvParser *csvparser = CsvParser_new("cl-tweets-short.csv", ",", 1);
+    CsvParser *csvparser = CsvParser_new(csv_file, ",", 1);
     CsvRow *header;
     CsvRow *row;
 
     header = CsvParser_getHeader(csvparser);
     if (header == NULL) {
         printf("%s\n", CsvParser_getErrorMessage(csvparser));
-        return 1;
+        exit(0);
+        //return 1;
     }
 
     all_tweeters = malloc(sizeof(struct tweet_container));
