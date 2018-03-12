@@ -277,6 +277,19 @@ char **CsvParser_getFields(CsvRow *csvRow) {
     return csvRow->fields_;
 }
 
+int getNumOcs(char* str, char* needle) {
+    char *p = malloc(sizeof(char)*1000);
+    strncpy(p, str, 1000);
+    int total = 0;
+    while ( (p=strstr(p, needle)) != NULL )
+    {
+        total++;
+        p++;
+    }
+    
+    free(p);
+    return total;
+}
 
 /* ---- MAIN ---- */
 int main(int argc, char **args) {
@@ -321,16 +334,54 @@ int main(int argc, char **args) {
     int found_name = 0;
     int header_count = 0;
     int name_spot = -1;
+    int newLineCount = 0;
+    int text_spot = 0;
     
     while (token != NULL)
     {
         printf ("%s\n",token);
+
+        // Ensure start and end of token is a quote mark
+        if (token[strlen(token)-1] == '\n' && newLineCount < 2) {
+            newLineCount += 1;
+        }
+        
+        else if (token[0] != 34 || token[strlen(token)-1] != 34) {
+            printf("token 0:%c\n", token[0]);
+            printf("token last:%c\n", token[strlen(token)-1]);
+            printf("Quote mark missing at start of header\n");
+            printf("Invalid Input Format\n");
+            exit(0);
+        }
+
+        if (newLineCount > 1) {
+            printf("Invalid Input Format\n");
+            exit(0);
+        }
+
+        int quoteNum = getNumOcs(token, "\"\"");
+        if (quoteNum > 2) {
+            printf("Invalid Input Format\n");
+            exit(0);
+        }
+
+        int commaNum = getNumOcs(token, ",");
+        if (commaNum > 0) {
+            printf("Invalid Input Format\n");
+            exit(0);
+        }
+        
         if (strncmp(token, "\"name\"", 6) == 0)
         {
             name_spot = header_count;
             found_name = 1;
         }
 
+        if (strncmp(token, "\"text\"", 6) == 0)
+        {
+            text_spot = header_count;
+        }
+        
         token = strtok (NULL, ",");
         header_count++;
     }
@@ -374,6 +425,12 @@ int main(int argc, char **args) {
         //     printf("FIELD: %s\n", rowFields[i]);
         // }
 
+        int commaNum = getNumOcs(rowFields[text_spot], ",");
+        if (commaNum > 0) {
+            printf("Invalid Input Format\n");
+            exit(0);
+        }
+        
         printf("FIELD: %s\n", rowFields[name_spot]);
         strncpy(all_tweeters->tweet_name_array[tweet_count],rowFields[name_spot], 16);
         //all_tweeters->tweet_name_array[tweet_count]
