@@ -306,30 +306,42 @@ int main(int argc, char **args) {
 
     /* Trying to not crash */
     char header_string[2000];
+
+    // If header is NULL invalid
     if (fgets (header_string, 2000, fp) == NULL) {
         exit(0);
     }
 
-    char *token;
-    token = strtok (header_string,",");
+    char header_copy[2000];
+    strncpy(header_copy, header_string, 1000);
+
+    char *token = malloc(sizeof(char)*1000);
+    token = strtok (header_copy,",");
     
     int found_name = 0;
     int header_count = 0;
-
+    int name_spot = -1;
+    
     while (token != NULL)
     {
-        // printf ("%s\n",token);
-        if (strncmp(token, "name", 4) == 0)
+        printf ("%s\n",token);
+        if (strncmp(token, "\"name\"", 6) == 0)
+        {
+            name_spot = header_count;
             found_name = 1;
+        }
+
         token = strtok (NULL, ",");
         header_count++;
     }
 
     if (found_name == 0)
+    {
+        printf("Did not find name column\n");
         exit(0);
-
-    if (header_count != 16)
-        exit(0);
+    }
+    //    if (header_count != 16)
+    //  exit(0);
     
     // file, delimiter, first_line_is_header?
     //CsvParser *csvparser = CsvParser_new("cl-tweets-short.csv", ",", 1);
@@ -362,8 +374,8 @@ int main(int argc, char **args) {
         //     printf("FIELD: %s\n", rowFields[i]);
         // }
 
-        printf("FIELD: %s\n", rowFields[8]);
-        strncpy(all_tweeters->tweet_name_array[tweet_count],rowFields[8],16);
+        printf("FIELD: %s\n", rowFields[name_spot]);
+        strncpy(all_tweeters->tweet_name_array[tweet_count],rowFields[name_spot], 16);
         //all_tweeters->tweet_name_array[tweet_count]
         printf("tweet container at %d: %s\n",tweet_count, all_tweeters->tweet_name_array[tweet_count]);
 
