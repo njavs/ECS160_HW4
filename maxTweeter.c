@@ -49,6 +49,9 @@ struct tweeter_stat_container {
 };
 
 /* ---- CSV PARSING HELPER FUNCTIONS ---- */
+
+/* Referenced API here: https://sourceforge.net/projects/cccsvparser/ */
+
 int _CsvParser_delimiterIsAccepted(const char *delimiter) {
     char actualDelimiter = *delimiter;
     if (actualDelimiter == '\n' || actualDelimiter == '\r' || actualDelimiter == '\0' ||
