@@ -32,7 +32,7 @@ struct tweet_container {
 };
 
 /*
- * Struct to hold the name of a tweeter and 
+ * Struct to hold the name of a tweeter and
  * the number of tweets they have written.
  */
 struct tweeter_stat {
@@ -40,7 +40,7 @@ struct tweeter_stat {
 	char name[16];
 };
 
-/* 
+/*
  * This structure contains an array of tweeter
  * stats representing all tweeters in the CSV file.
  */
@@ -87,12 +87,12 @@ CsvParser *CsvParser_new(const char *filePath, const char *delimiter, int firstL
 
 CsvParser *CsvParser_new_from_string(const char *csvString, const char *delimiter, int firstLineIsHeader) {
 	CsvParser *csvParser = CsvParser_new(NULL, delimiter, firstLineIsHeader);
-	csvParser->fromString_ = 1;	
+	csvParser->fromString_ = 1;
 	if (csvString != NULL) {
 		int csvStringLen = strlen(csvString);
 		csvParser->csvString_ = (char*)malloc(csvStringLen + 1);
 		strcpy(csvParser->csvString_, csvString);
-	}	
+	}
 	return csvParser;
 }
 
@@ -102,6 +102,24 @@ void CsvParser_destroy_row(CsvRow *csvRow) {
         free(csvRow->fields_[i]);
     }
     free(csvRow);
+}
+
+int count_the_char(char *str,char token) {
+  strncpy(strCpy,str,1000)
+  char *tok = malloc(sizeof(char)*1000);
+  tok = strtok(strCpy,token);
+
+  int found_name = 0;
+  int count = 0;
+  int name_spot = -1;
+
+  while (token != NULL)
+  {
+      token = strtok (NULL, ",");
+      count++;
+  }
+  return count;
+
 }
 
 void CsvParser_destroy(CsvParser *csvParser) {
@@ -142,7 +160,7 @@ CsvRow *_CsvParser_getRow(CsvParser *csvParser) {
     int acceptedCharsInField = 64;
 
     /* Print all struct information */
-    
+
     if (csvParser->filePath_ == NULL && (! csvParser->fromString_)) {
         _CsvParser_setErrorMessage(csvParser, "Supplied CSV file path is NULL");
         //printf("filepath: %s\n", csvParser->filePath_);
@@ -286,15 +304,21 @@ int main(int argc, char **args) {
     //struct tweet_stat_container* stats;
     struct tweeter_stat * stats;
 
-    if (argc !=2 )
+    if (argc !=2 ){
+        printf("Invalid Input Format 3\n");
         exit(0);
+    }
 
-    if (args[0] == NULL)
+    if (args[0] == NULL){
+        printf("Invalid Input Format 4\n");
         exit(0);
-    
-    if (args[1] == NULL)
+    }
+
+    if (args[1] == NULL){
+        printf("Invalid Input Format 5\n");
         exit(0);
-    
+    }
+
     char *csv_file = args[1];
     FILE *fp;
     fp = fopen(csv_file, "r");
@@ -309,19 +333,19 @@ int main(int argc, char **args) {
 
     // If header is NULL invalid
     if (fgets (header_string, 2000, fp) == NULL) {
+        printf("Invalid Input Format 1\n");
         exit(0);
     }
-
     char header_copy[2000];
     strncpy(header_copy, header_string, 1000);
 
     char *token = malloc(sizeof(char)*1000);
     token = strtok (header_copy,",");
-    
+
     int found_name = 0;
     int header_count = 0;
     int name_spot = -1;
-    
+
     while (token != NULL)
     {
         printf ("%s\n",token);
@@ -335,14 +359,14 @@ int main(int argc, char **args) {
         header_count++;
     }
 
-    if (found_name == 0)
-    {
-        printf("Did not find name column\n");
+    if (found_name == 0){
+        printf("Invalid Input Format 2\n");
         exit(0);
     }
+
     //    if (header_count != 16)
     //  exit(0);
-    
+
     // file, delimiter, first_line_is_header?
     //CsvParser *csvparser = CsvParser_new("cl-tweets-short.csv", ",", 1);
     CsvParser *csvparser = CsvParser_new(csv_file, ",", 1);
@@ -350,9 +374,10 @@ int main(int argc, char **args) {
     CsvRow *row;
 
     header = CsvParser_getHeader(csvparser);
-    
+
     if (header == NULL) {
         printf("%s\n", CsvParser_getErrorMessage(csvparser));
+        printf("Invalid Input Format 85\n");
         exit(0);
         //return 1;
      }
@@ -411,7 +436,7 @@ int main(int argc, char **args) {
     int j;
     int unique_members = 0;
     stats = malloc(sizeof(struct tweeter_stat) * TWEET_MAX);
-    
+
     for (int i = 0; i < tweet_count - 1; i++) {
       count = 0;
 
@@ -456,7 +481,7 @@ int main(int argc, char **args) {
     for (int i = 0; i < 10; i++) {
         printf("Name: %s, Count: %d\n", stats[i].name, stats[i].count);
     }
-    
+
     CsvParser_destroy(csvparser);
     free(all_tweeters);
     free(stats);
