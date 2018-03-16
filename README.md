@@ -1,9 +1,11 @@
 # ECS 160: HW 4
 ### Team: Andrew Shephard, Nausheen Sujela
 
-—- CRASH 1 —-
-Defect Line No. 72
-Brief Description of Crash
+#### —- CRASH 1 —-  
+    
+Defect Line: No. 72  
+
+Brief Description of Crash  
 ```
 Starting program: /other-afl-examples/csv/csv-prem id:000000,sig:11,src:000000,op:flip1,pos:47
 
